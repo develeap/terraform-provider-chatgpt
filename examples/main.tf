@@ -2,7 +2,7 @@ terraform {
   required_providers {
     chatgpt = {
       version = "0.0.1"
-      source  = "hashicorp.com/develeap/chatgpt"
+      source  = "develeap/chatgpt"
     }
   }
 }
