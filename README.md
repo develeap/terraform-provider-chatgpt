@@ -5,8 +5,8 @@ Terraform Provider ChatGPT
 This project is used to read and write to/from **ChatGPT** queries using Terraform.
 
 ## ℹ️️ Requirements
--	[Terraform](https://www.terraform.io/downloads.html) 0.10.x
--	[Go](https://golang.org/doc/install) 1.20.x (to build the provider plugin)
+-	[Terraform](https://www.terraform.io/downloads.html) 1.2.x or higher
+-	[Go](https://golang.org/doc/install) 1.22.x or higher (to build the provider plugin)
 
 ## 💁🏻 Contributing 
 This is an open source project. Any contribution would be greatly appreciated!
