@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	chatgpt "github.com/sashabaranov/go-gpt3"
+	openai "github.com/sashabaranov/go-openai"
 )
 
 func resourcePrompt() *schema.Resource {
@@ -55,7 +55,7 @@ func resourcePromptCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func resourcePromptRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*chatgpt.Client)
+	c := m.(*openai.Client)
 
 	maxTokens := d.Get("max_tokens").(int)
 	query := d.Get("query").(string)
@@ -64,18 +64,23 @@ func resourcePromptRead(ctx context.Context, d *schema.ResourceData, m interface
 		return nil
 	}
 
-	req := chatgpt.CompletionRequest{
+	req := openai.ChatCompletionRequest{
 		Model:     AI_MODEL,
 		MaxTokens: maxTokens,
-		Prompt:    query,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: query,
+			},
+		},
 	}
-	resp, err := c.CreateCompletion(ctx, req)
+	resp, err := c.CreateChatCompletion(ctx, req)
 
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	result := strings.TrimSpace(resp.Choices[0].Text)
+	result := strings.TrimSpace(resp.Choices[0].Message.Content)
 
 	if err := d.Set("result", result); err != nil {
 		return diag.FromErr(err)

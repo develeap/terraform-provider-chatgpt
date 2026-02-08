@@ -5,10 +5,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	gpt "github.com/sashabaranov/go-gpt3"
+	openai "github.com/sashabaranov/go-openai"
 )
 
-const AI_MODEL = gpt.GPT3TextDavinci003
+const AI_MODEL = openai.GPT3Dot5Turbo
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -32,14 +32,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiKey := d.Get("api_key").(string)
 	var diags diag.Diagnostics
 
-	if apiKey != "" {
-		c := gpt.NewClient(apiKey)
-		// if err != nil {
-		// 	return nil, diag.FromErr(err)
-		// }
-
-		return c, diags
+	if apiKey == "" {
+		return nil, diag.Errorf("api_key must be set. Get your API key from https://platform.openai.com/account/api-keys")
 	}
 
-	return nil, diags
+	c := openai.NewClient(apiKey)
+	return c, diags
 }
